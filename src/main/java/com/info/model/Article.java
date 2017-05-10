@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 public class Article {
 	private String title;
 	private String url;
+	private String code;
 	
 	
 	public String getTitle() {
@@ -26,6 +27,13 @@ public class Article {
 		// TODO Auto-generated method stub
 		return JSONObject.toJSONString(this);
 	}
-	
-	
+
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 }

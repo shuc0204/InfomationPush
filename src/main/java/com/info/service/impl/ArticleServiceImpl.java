@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +26,9 @@ import com.info.service.ArticleService;
 
 @Service("articleServiceImpl")
 public class ArticleServiceImpl implements ArticleService {
+
+
+	static private ConcurrentHashMap<String,Article> cache = new ConcurrentHashMap();
 
 	@Override
 	public ArticleResultList getArticleByCategoryCode(String categoryCode,Integer curPage,Integer pageSize) {
@@ -63,8 +68,11 @@ public class ArticleServiceImpl implements ArticleService {
 		for (Element element : links) {
 			Article article=new Article();
 			article.setTitle(element.text());
-			article.setUrl("http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename="+getUrlFileName(element.attr("href")));
+			String fileCode = getUrlFileName(element.attr("href"));
+			article.setCode(fileCode);
+			article.setUrl("http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename="+ fileCode);
 			articleList.add(article);
+			cache.put(fileCode,article);
 		}
 		//          /((\d+,*)+)/
 		//System.out.println(content.outerHtml());
@@ -92,10 +100,14 @@ public class ArticleServiceImpl implements ArticleService {
         }       		
 		return articleResultList;
 	}
-	
+
+	@Override
+	public Article getArticleByCode(String articleCode) {
+		return cache.get(articleCode);
+	}
+
 	private static String getUrlFileName(String attr) {
-		// TODO Auto-generated method stub
-		
+
 		Pattern pattern = Pattern.compile("FileName=(\\w*)");
 		Matcher matcher = pattern.matcher(attr);
 		if(matcher.find()) 
@@ -105,7 +117,6 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public ArticleResultList getArticleByCategoryCode(String categoryCode) {
-		// TODO Auto-generated method stub
 		return getArticleByCategoryCode(categoryCode,null,null);
 	}
 	

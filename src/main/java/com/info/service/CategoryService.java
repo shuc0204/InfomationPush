@@ -10,5 +10,6 @@ public interface CategoryService {
 	List<Category> getPrimaryCategoryList();
 	
 	List<Category> getCategoryListByParentCode(String parentCategoryCode);
-	
+
+	Category getCategoryByCode(String categoryCode);
 }
