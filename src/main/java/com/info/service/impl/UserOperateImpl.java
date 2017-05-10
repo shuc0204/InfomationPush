@@ -12,16 +12,17 @@ import com.info.service.UserOperate;
 @Service("userOperateImpl")
 public class UserOperateImpl implements UserOperate {
 
+
 	@Resource UserMapper userDao;
 	@Override
 	public User userLogin(User user) {		
-		return userDao.selectByUsername(user.getUsername());
+		return userDao.selectByUsername(user);
 	}
 
 	@Override
 	public boolean userRegist(User user) {
 
-		User getUser = userDao.selectByUsername(user.getUsername());
+		User getUser = userDao.selectByUsername(user);
 		int count=0;
 		if(getUser==null){
 			count = userDao.insert(user);
@@ -48,7 +49,7 @@ public class UserOperateImpl implements UserOperate {
 
 	@Override
 	public boolean getUser(User user) {
-		User oldUser=userDao.selectByUsername(user.getUsername());
+		User oldUser=userDao.selectByUsername(user);
 		if(user.getPassword().equals(oldUser.getPassword())){
 			return true;
 		}else{
