@@ -29,8 +29,11 @@
     
     $(document).ready(function() {
     	 	
-    	var memuItemHandler = function(){
-    		    		
+    	var memuItemHandler = function(e){
+
+    	    if(e.target.tagName.toUpperCase()=='SPAN'){
+    	        return;
+            }
     		function toggleMenu(){
         		if($(this).siblings('ul').css('display')=='none'){
         			$(this).parent('li').siblings('li').removeClass('inactives');
@@ -69,7 +72,7 @@
 	  	      	}).done(function(data){
 	  	      		childsMenu = $('<ul style="display: none"></ul>');
 	  	      		$.each(data.childMenuList,function(index,item){
-	  	      			var li = $('<li><a data-code="'+item.code+'" class="inactive" href="#"><span onclick="getArticles(\''+item.code+'\')">'+item.title+'</span></a></li>');
+	  	      			var li = $('<li><a data-code="'+item.code+'" class="inactive" href="javascript:void(0);"><span onclick="getArticles(\''+item.code+'\')">'+item.title+'</span></a></li>');
 	  	      			childsMenu.append(li);
 	  	      		});
 	  	      		
@@ -113,12 +116,12 @@
             <h1>菜单</h1>
         </div>
         <div class="list">
+            <ul class="yiji">
 			<c:forEach items="${primMenuList}" var="menulist">
-				<ul class="yiji">
-					<li><a href="#"  data-code="${menulist.code}" class="menu-item inactive">${menulist.title}</a>							
-					</li>	
-				</ul>
+                <li><a href="javascript:void(0);"  data-code="${menulist.code}" class="menu-item inactive"> <span onclick="getArticles('${menulist.code}')" > ${menulist.title}  </span></a>
+					</li>
 				</c:forEach>
+            </ul>
 			</div>
         
     </div>
