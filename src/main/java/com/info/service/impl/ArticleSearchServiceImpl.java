@@ -8,6 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -22,6 +23,7 @@ import java.util.regex.Pattern;
 /**
  * Created by wayne on 2017/5/10.
  */
+@Service
 public class ArticleSearchServiceImpl implements ArticleSearchService {
     static final String ArticleUrlPrefix = "http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=";
 
