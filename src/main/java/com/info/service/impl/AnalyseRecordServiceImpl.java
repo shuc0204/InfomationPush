@@ -11,11 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.security.auth.kerberos.KerberosKey;
 
 /**
  * Created by wayne on 2017/5/10.
@@ -37,8 +34,6 @@ public class AnalyseRecordServiceImpl implements AnalyseRecordService {
     		
     	//获取 文章关键字数组
     	String[] keyWords=articleService.getKeyWords(articleCode);
-//        System.out.println(user.getName() + " 浏览了 "+ articleService.getArticleByCode(articleCode).getTitle()
-//        );
         /**
          *
          *  这里将用户浏览记录保存到数据库     
@@ -57,22 +52,22 @@ public class AnalyseRecordServiceImpl implements AnalyseRecordService {
          * 通过关键字 获取 指定数目 的文章 
          *
          */
-        List keyList=getMaxKeywordCount();
-        return Arrays.asList(new String[]{
-            "文章列表.。。"
-        });
+        // 数据库 查询 出来关键字次数最多的5个；
+        List<Keyword> keyList=keywordDao.selectByKeycount();
+      
+        List keywords=new ArrayList();
+        for (Keyword keyword : keyList) {
+			keywords.add(keyword.getKeyword());
+		}
+        
+        return keywords;
     }
-    
-    
-    //获取  最多数目的关键字
-	private List getMaxKeywordCount() {
-		
-		return null;
-	}
+         
 
 	@Override
 	public List<Article> searchArticleByKeyword(List keywords, int queryCount) {
 		// TODO 通过关键字 搜索指定 数目 文章
 		return null;
 	}
+	
 }

@@ -16,6 +16,13 @@
     from keyword
     where kid = #{kid,jdbcType=INTEGER}
   </select>
+  <select id="selectByKeycount" resultMap="BaseResultMap">
+  	 select 
+  	 <include refid="Base_Column_List" />
+  	 from (select 
+  	 <include refid="Base_Column_List" />
+  	 from keyword order by keycount desc) as tmp limit 5
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from keyword
     where kid = #{kid,jdbcType=INTEGER}

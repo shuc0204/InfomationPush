@@ -18,4 +18,6 @@ public interface KeywordMapper {
     int updateByPrimaryKey(Keyword record);
 
 	int insertKeywordsList(List<Keyword> keys);
+
+	List<Keyword> selectByKeycount();
 }

@@ -1,5 +1,6 @@
 package com.info.controller;
 
+import com.info.model.Article;
 import com.info.model.ArticleResultList;
 import com.info.model.User;
 import com.info.service.AnalyseRecordService;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wayne on 2017/5/10.
@@ -37,7 +39,10 @@ public class AnalyseAndPushController {
             return "对不起,用户未登录！";
         }
         User user = (User) userObj;
-        return analyseRecordService.analyseAndPush(user,articleCode);
+        List keywordList = analyseRecordService.analyseAndPush(user,articleCode);
+        List<Article> pushArticleList = analyseRecordService.searchArticleByKeyword(keywordList, 20);
+		
+        return pushArticleList;
     }
 
 }

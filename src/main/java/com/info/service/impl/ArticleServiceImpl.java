@@ -76,7 +76,7 @@ public class ArticleServiceImpl implements ArticleService {
 			article.setCode(fileCode);
             article.setUrl(ArticleUrlPrefix + fileCode);
 			articleList.add(article);
-            System.out.println(article.getTitle());
+
             cache.put(fileCode,article);
 		}
 		//          /((\d+,*)+)/
@@ -133,7 +133,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public String[] getKeyWords(String articleCode) {
-		// TODO 需要  关键字数组
+
         ArticleFull articleFullInfo = getArticleFullInfo(articleCode);
         if(articleFullInfo == null){
             return new String[]{};
