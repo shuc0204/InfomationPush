@@ -12,6 +12,7 @@ import com.info.service.UserOperate;
 @Service("userOperateImpl")
 public class UserOperateImpl implements UserOperate {
 
+
 	@Resource UserMapper userDao;
 	@Override
 	public User userLogin(User user) {		

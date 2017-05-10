@@ -27,7 +27,6 @@ public class Article {
 		return JSONObject.toJSONString(this);
 	}
 
-
 	public String getCode() {
 		return code;
 	}
