@@ -46,8 +46,8 @@ public void after() throws Exception {
 */ 
 @Test
 public void testConvertStreamToString() throws Exception { 
-	List analyseAndPush = analyseRecordService.analyseAndPush(null, null);
-	System.out.println(analyseAndPush);
+//	List analyseAndPush = analyseRecordService.analyseAndPush(null, null);
+//	System.out.println(analyseAndPush);
 } 
 
 

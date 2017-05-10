@@ -73,6 +73,9 @@ public class AnalyseRecordServiceImpl implements AnalyseRecordService {
 	@Override
 	public List<Article> searchArticleByKeyword(List keywords, int queryCount) {
 		// TODO 通过关键字 搜索指定 数目 文章
+
+
+
 		return null;
 	}
 }

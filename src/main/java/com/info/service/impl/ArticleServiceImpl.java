@@ -133,7 +133,6 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public String[] getKeyWords(String articleCode) {
-		// TODO 需要  关键字数组
         ArticleFull articleFullInfo = getArticleFullInfo(articleCode);
         if(articleFullInfo == null){
             return new String[]{};
