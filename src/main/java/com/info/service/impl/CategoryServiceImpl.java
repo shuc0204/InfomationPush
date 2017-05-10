@@ -33,7 +33,6 @@ public class CategoryServiceImpl implements CategoryService{
 		try {
 			reader = new BufferedReader(new InputStreamReader(is,"utf-8"));
 		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}      
          StringBuilder sb = new StringBuilder();      

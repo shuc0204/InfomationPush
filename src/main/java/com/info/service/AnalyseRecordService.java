@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface AnalyseRecordService {
 
-    List analyseAndPush(User user, String categoryCode, String articleCode);
+    List analyseAndPush(User user,  String articleCode);
 }

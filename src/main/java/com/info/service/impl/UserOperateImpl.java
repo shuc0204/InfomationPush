@@ -48,7 +48,6 @@ public class UserOperateImpl implements UserOperate {
 
 	@Override
 	public boolean getUser(User user) {
-		// TODO Auto-generated method stub
 		User oldUser=userDao.selectByUsername(user.getUsername());
 		if(user.getPassword().equals(oldUser.getPassword())){
 			return true;

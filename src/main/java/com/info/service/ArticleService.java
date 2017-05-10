@@ -10,4 +10,6 @@ public interface ArticleService {
 	ArticleResultList getArticleByCategoryCode(String categoryCode, Integer curPage, Integer pageSize);
 
 	Article getArticleByCode(String articleCode);
+
+	String[] getKeyWords(String articleCode);
 }

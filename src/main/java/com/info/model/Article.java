@@ -24,7 +24,6 @@ public class Article {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return JSONObject.toJSONString(this);
 	}
 

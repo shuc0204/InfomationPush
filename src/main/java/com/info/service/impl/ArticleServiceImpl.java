@@ -41,7 +41,6 @@ public class ArticleServiceImpl implements ArticleService {
 			pageSize= 20;
 		}
 		
-		// TODO Auto-generated method stub
 		List<Article> articleList = new ArrayList<Article>();
 		//A002_2
 		String target = "http://kns.cnki.net/kns/request/SearchHandler.ashx?action=&NaviCode="+categoryCode+"&ua=1.15&PageName=ASP.brief_default_result_aspx&DbPrefix=SCDB&DbCatalog=%e4%b8%ad%e5%9b%bd%e5%ad%a6%e6%9c%af%e6%96%87%e7%8c%ae%e7%bd%91%e7%bb%9c%e5%87%ba%e7%89%88%e6%80%bb%e5%ba%93&ConfigFile=SCDBINDEX.xml&his=0&__=Sat%20May%2006%202017%2010%3A48%3A53%20GMT%2B0800";
@@ -60,7 +59,6 @@ public class ArticleServiceImpl implements ArticleService {
 			}						
 			content = connect.url(string).cookies(response.cookies()).get();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -118,6 +116,12 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public ArticleResultList getArticleByCategoryCode(String categoryCode) {
 		return getArticleByCategoryCode(categoryCode,null,null);
+	}
+
+	@Override
+	public String[] getKeyWords(String articleCode) {
+		// TODO 需要  关键字数组
+		return null;
 	}
 	
 

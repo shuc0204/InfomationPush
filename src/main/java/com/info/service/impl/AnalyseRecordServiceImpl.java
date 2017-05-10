@@ -23,11 +23,13 @@ public class AnalyseRecordServiceImpl implements AnalyseRecordService {
     private CategoryService categoryService;
 
     @Override
-    public List analyseAndPush(User user, String categoryCode, String articleCode) {
+    public List analyseAndPush(User user, String articleCode) {
+    		
+    	//获取 文章关键字数组
+    	String[] keyWords=articleService.getKeyWords(articleCode);
 
-
-        System.out.println(user.getName() + " 浏览了 " + categoryService.getCategoryByCode(categoryCode).getTitle()
-                    +" 分类下的文章 ： " + articleService.getArticleByCode(articleCode).getTitle()
+        System.out.println(user.getName() + " 浏览了 " 
+                    + articleService.getArticleByCode(articleCode).getTitle()
         );
 
         /**

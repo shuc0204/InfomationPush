@@ -30,14 +30,14 @@ public class AnalyseAndPushController {
 
     @RequestMapping("/analyse/submit.do")
     @ResponseBody
-    public Object analyseAndPush(@RequestParam String categoryCode,@RequestParam String articleCode, HttpSession session){
+    public Object analyseAndPush(@RequestParam String articleCode, HttpSession session){
 
         Object userObj = session.getAttribute("loginUser");
         if(userObj ==null){
             return "对不起,用户未登录！";
         }
         User user = (User) userObj;
-        return analyseRecordService.analyseAndPush(user,categoryCode,articleCode);
+        return analyseRecordService.analyseAndPush(user,articleCode);
     }
 
 }

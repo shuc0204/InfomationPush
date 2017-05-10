@@ -24,7 +24,6 @@ public class Category {
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return JSONObject.toJSONString(this);
 	}
 	
