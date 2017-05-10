@@ -69,15 +69,7 @@ public class AnalyseRecordServiceImpl implements AnalyseRecordService {
     ArticleSearchService articleSearchService ;
 	@Override
 	public List<Article> searchArticleByKeyword(List keywords, int queryCount) {
-		// TODO 通过关键字 搜索指定 数目 文章
-
-        ArticleResultList articleResultList = articleSearchService.queryByKeyWords(keywords);
-        if(articleResultList.getPageSize()>=queryCount){
-            return articleResultList.getData().subList(0,queryCount);
-        }else{
-            //TODO 超过20条的话，再改
-            return articleResultList.getData();
-        }
+		return  articleSearchService.searchArticleByKeyWord(keywords,queryCount);
 	}
 	
 }

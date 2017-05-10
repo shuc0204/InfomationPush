@@ -1,21 +1,15 @@
 package com.info.service.impl;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.info.model.ArticleFull;
 import com.info.util.FileCacheUtil;
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.FileUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.Connection.Response;
@@ -27,7 +21,6 @@ import org.springframework.stereotype.Service;
 import com.info.model.Article;
 import com.info.model.ArticleResultList;
 import com.info.service.ArticleService;
-import sun.misc.IOUtils;
 
 
 @Service("articleServiceImpl")
@@ -72,7 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
 			Article article=new Article();
 			article.setTitle(element.text());
 			String fileCode = getUrlFileName(element.attr("href"));
-			article.setCode(fileCode);
+			article.setFileName(fileCode);
             article.setUrl(ArticleUrlPrefix + fileCode);
 			articleList.add(article);
 
@@ -162,7 +155,7 @@ public class ArticleServiceImpl implements ArticleService {
             }
             document = Jsoup.parse(tempContent);
             articleFull = new ArticleFull();
-            articleFull.setCode(articleCode);
+            articleFull.setFileName(articleCode);
             Elements elements = document.select("#catalog_KEYWORD~a");
             String[] kws = new String[elements.size()];
             for (int i = 0; i < kws.length; i++) {

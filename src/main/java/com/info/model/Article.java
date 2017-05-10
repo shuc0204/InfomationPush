@@ -5,7 +5,27 @@ import com.alibaba.fastjson.JSONObject;
 public class Article {
 	private String title;
 	private String url;
-	private String code;
+	private String fileName;
+
+	public String getDbCode() {
+		return dbCode;
+	}
+
+	public void setDbCode(String dbCode) {
+		this.dbCode = dbCode;
+	}
+
+	public String getDbName() {
+		return dbName;
+	}
+
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
+	}
+
+	private String dbCode ;
+	private  String dbName;
+
 	
 	
 	public String getTitle() {
@@ -27,11 +47,11 @@ public class Article {
 		return JSONObject.toJSONString(this);
 	}
 
-	public String getCode() {
-		return code;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }

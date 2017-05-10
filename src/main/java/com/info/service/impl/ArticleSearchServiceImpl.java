@@ -3,20 +3,21 @@ package com.info.service.impl;
 import com.info.model.Article;
 import com.info.model.ArticleResultList;
 import com.info.service.ArticleSearchService;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,42 +26,116 @@ import java.util.regex.Pattern;
  */
 @Service
 public class ArticleSearchServiceImpl implements ArticleSearchService {
-    static final String ArticleUrlPrefix = "http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=";
+    static final String ArticleUrlPrefix = "http://kns.cnki.net/KCMS/detail/detail.aspx";
 
+    static final CacheManager cacheManager = new ConcurrentMapCacheManager();
 
     @Override
     public ArticleResultList queryByCategoryCode(String categoryCode) {
-        return getArticleByCategoryCode(null,categoryCode,1,20);
+        try {
+            return getArticleList(null, categoryCode, 1, 20);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArticleResultList();
+        }
     }
 
     @Override
     public ArticleResultList queryByKeyWords(List<String> keyWordList) {
-        return getArticleByCategoryCode(keyWordList,null,1,20);
+        try {
+            return getArticleList(keyWordList, null, 1, 20);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArticleResultList();
+        }
     }
 
-    private static String getUrlFileName(String attr) {
+    @Override
+    public ArticleResultList queryByKeyWords(List<String> keyWordList, int paggSize, int curPage) {
+        try {
+            return getArticleList(keyWordList, null, curPage, paggSize);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArticleResultList();
+        }
+    }
 
-        Pattern pattern = Pattern.compile("FileName=(\\w*)");
-        Matcher matcher = pattern.matcher(attr);
-        if(matcher.find())
+    @Override
+    public List<Article> searchArticleByKeyWord(List keywords, int queryCount) {
+        // TODO 通过关键字 搜索指定 数目 文章
+        ArticleResultList articleResultList = queryByKeyWords(keywords, 20, 1);
+        if (articleResultList.getPageSize() >= queryCount) {
+            return articleResultList.getData().subList(0, queryCount);
+        } else {
+            List<Article> list = articleResultList.getData();
+            int i = 2;
+            do {
+                list.addAll(queryByKeyWords(keywords, 20, i).getData());
+                i++;
+            } while (list.size() < queryCount);
+            return list.subList(0, queryCount);
+        }
+    }
+
+    public static String getAttrFrom(String queryString, String attr) {
+//        dbcode=CJFQ&dbname=CJFD2014&filename=
+        Pattern pattern = Pattern.compile("[?&]" + attr + "=([^&]*)(?=&|$)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(queryString);
+        if (matcher.find())
             return (matcher.group(1));
         return null;
     }
 
-
-    public ArticleResultList getArticleByCategoryCode(List<String> keyWord, String categoryCode,Integer curPage,Integer pageSize) {
-
-        String string=null;
-        if(curPage == null){
-            curPage=1;
+    public <T> T getFromCache(Object key) {
+        Cache.ValueWrapper c1 = cacheManager.getCache("c").get(key);
+        if(c1 == null){
+            return null;
         }
-        if(pageSize == null){
-            pageSize= 20;
+        Object c = c1.get();
+        return (T) c;
+    }
+
+    public <T> T putToCache(Object key, T v) {
+        cacheManager.getCache("c").put(key, v);
+        return v;
+    }
+
+    public ArticleResultList getArticleByCategoryCode(String categoryCode, Integer curPage, Integer pageSize) {
+        try {
+            return getArticleList(null, categoryCode, curPage, pageSize);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArticleResultList();
+        }
+    }
+
+    public String convertArgumentToKey(List<String> keyWord, String categoryCode, Integer curPage, Integer pageSize) {
+        StringBuilder sb = new StringBuilder();
+
+        if (keyWord != null) {
+//            Arrays.sort((String[])keyWord.toArray());
+            ArrayList<String> sortList = new ArrayList<>(keyWord);
+            Collections.sort(sortList);
+            String kws = StringUtils.join(sortList, ",");
+            sb.append(kws).append(":");
+        }
+        if (categoryCode != null) {
+            sb.append(categoryCode).append(":");
+        }
+        return sb.toString();
+    }
+
+    public ArticleResultList getArticleList(List<String> keyWord, String categoryCode, Integer curPage, Integer pageSize) throws IOException {
+
+
+        if (curPage == null) {
+            curPage = 1;
+        }
+        if (pageSize == null) {
+            pageSize = 20;
         }
 
         List<Article> articleList = new ArrayList<Article>();
-
-
 
 //        action:
 //        NaviCode:*
@@ -81,101 +156,105 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
 //        txt_2_logical:or
 //        txt_2_relation:#CNKI_OR
 //        txt_2_special1:=
+        Connection connect;
+        String searchSession;
+        Map<String, String> searchSessionCookie;
+        String cacheKey = convertArgumentToKey(keyWord, categoryCode, curPage, pageSize);
+        String cacheCookieKey = cacheKey + "_cookie";
+        String cacheConnectKey = cacheKey + "_connect";
 
-        String target = "http://kns.cnki.net/kns/request/SearchHandler.ashx?action=&ua=1.15" +
-                "&PageName=ASP.brief_default_result_aspx" +
-                "&DbPrefix=SCDB" +
-                "&DbCatalog=%e4%b8%ad%e5%9b%bd%e5%ad%a6%e6%9c%af%e6%96%87%e7%8c%ae%e7%bd%91%e7%bb%9c%e5%87%ba%e7%89%88%e6%80%bb%e5%ba%93" +
-                "&ConfigFile=SCDB.xml" +
-                "&db_opt=CJFQ%2CCDFD%2CCMFD%2CCPFD%2CIPFD%2CCCND" +
-                "&his=0";
-
-        try {
-            target += "&__="+URLEncoder.encode(new Date().toString(), "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        if(categoryCode!=null){
-            target += "&NaviCode="+categoryCode;
-        }
-
-        if(keyWord!=null){
-            target += keyWordListToQueryString(keyWord,"11222");
-        }
-
-        String target2 = "http://kns.cnki.net/kns/brief/brief.aspx?t="+new Date().getTime()+"&pagename=";
-
-        Document content = null;
-        try {
-            Connection connect =  Jsoup.connect(target);
-            connect.userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0");
-            Connection.Response response = connect.timeout(30000).execute();
-            if(curPage==1){
-                string = target2+response.body();
-                string += "&curpage="+curPage+"&RecordsPerPage="+pageSize;
-            }else{
-                string="http://kns.cnki.net/kns/brief/brief.aspx?t="+new Date().getTime()+"&curpage="+curPage+"&RecordsPerPage="+pageSize+"&QueryID=3&ID=&turnpage=1&tpagemode=L&dbPrefix=SCDB&Fields=&DisplayMode=listmode&PageName=ASP.brief_default_result_aspx#J_ORDER&";
+        if (getFromCache(cacheKey) == null) {
+            String target = "http://kns.cnki.net/kns/request/SearchHandler.ashx?action=&ua=1.15" +
+                    "&PageName=ASP.brief_default_result_aspx" +
+                    "&DbPrefix=SCDB" +
+                    "&DbCatalog=%e4%b8%ad%e5%9b%bd%e5%ad%a6%e6%9c%af%e6%96%87%e7%8c%ae%e7%bd%91%e7%bb%9c%e5%87%ba%e7%89%88%e6%80%bb%e5%ba%93" +
+                    "&ConfigFile=SCDB.xml" +
+                    "&db_opt=CJFQ%2CCDFD%2CCMFD%2CCPFD%2CIPFD%2CCCND" +
+                    "&his=0";
+            try {
+                target += "&__=" + URLEncoder.encode(new Date().toString(), "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            content = connect.url(string).cookies(response.cookies()).get();
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (categoryCode != null) {
+                target += "&NaviCode=" + categoryCode;
+            }
+            if (keyWord != null) {
+                target += keyWordListToQueryString(keyWord, "11222");
+            }
+            connect = Jsoup.connect(target);
+            connect.userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0");
+            Connection.Response execute = connect.timeout(30000).execute();
+            searchSession = execute.body();
+            searchSessionCookie = execute.cookies();
+            putToCache(cacheKey, execute.body());
+            putToCache(cacheCookieKey, searchSessionCookie);
+            putToCache(cacheConnectKey, connect);
+        } else {
+            searchSession = getFromCache(cacheKey);
+            searchSessionCookie = getFromCache(cacheCookieKey);
+            connect = getFromCache(cacheConnectKey);
         }
 
-        Elements links=content.select("[class=fz14]");
+        String target2 = "http://kns.cnki.net/kns/brief/brief.aspx?t=" + new Date().getTime() + "&pagename=" + searchSession;
+        target2 += "&curpage=" + curPage + "&RecordsPerPage=" + pageSize;
+        Document content = connect.url(target2).cookies(searchSessionCookie).get();
+        Elements links = content.select("[class=fz14]");
         for (Element element : links) {
-            Article article=new Article();
+            Article article = new Article();
             article.setTitle(element.text());
-            String fileCode = getUrlFileName(element.attr("href"));
-            article.setCode(fileCode);
-            article.setUrl(ArticleUrlPrefix + fileCode);
+            String href = element.attr("href");
+            String filename = getAttrFrom(href, "filename");
+            String dbcode = getAttrFrom(href, "dbcode");
+            String dbname = getAttrFrom(href, "dbname");
+            article.setFileName(filename);
+            article.setDbCode(dbcode);
+            article.setDbName(dbname);
+            String articlePara = "";
+            if (filename != null) {
+                articlePara += "&filename=" + filename;
+            }
+            if (dbcode != null) {
+                articlePara += "&dbcode=" + dbcode;
+            }
+            if (dbname != null) {
+                articlePara += "&dbname=" + dbname;
+            }
+            String articleUrl = ArticleUrlPrefix + "?" + articlePara.substring(1);
+            article.setUrl(articleUrl);
             articleList.add(article);
-//            cache.put(fileCode,article);
         }
-        //          /((\d+,*)+)/
-        //System.out.println(content.outerHtml());
         String text = content.select(".TitleLeftCell > div:nth-child(1)").text();
         String regex = "((\\d+,*)+)";
         Pattern mPattern = Pattern.compile(regex);
         Matcher mMatcher = mPattern.matcher(text);
-        if(mMatcher.find()){
+        if (mMatcher.find()) {
             text = mMatcher.group(1).replace(",", "");
-        }else{
+        } else {
             text = "0";
         }
-
         ArticleResultList articleResultList = new ArticleResultList();
-
         articleResultList.setData(articleList);
         articleResultList.setTotal(Long.parseLong(text));
         articleResultList.setPageSize(pageSize);
         articleResultList.setCurrentPage(curPage);
-
-        if(Long.parseLong(text)%pageSize==0){
-            articleResultList.setPageCount(Long.parseLong(text)/pageSize);
-        }else{
-            articleResultList.setPageCount(Long.parseLong(text)/pageSize+1);
+        if (Long.parseLong(text) % pageSize == 0) {
+            articleResultList.setPageCount(Long.parseLong(text) / pageSize);
+        } else {
+            articleResultList.setPageCount(Long.parseLong(text) / pageSize + 1);
         }
         return articleResultList;
     }
 
-    private static String urlEncode(String appendTarget,String key,String txt){
+    private static StringBuilder urlEncode(StringBuilder appendTarget, String key, String txt) {
         try {
-            return appendTarget + "&"+key+"="+URLEncoder.encode(txt, "utf-8");
+            return appendTarget.append("&" + key + "=" + URLEncoder.encode(txt, "utf-8"));
         } catch (UnsupportedEncodingException e) {
             return appendTarget;
         }
     }
 
-    private static StringBuilder urlEncode(StringBuilder appendTarget,String key,String txt){
-        try {
-            return appendTarget.append( "&"+key+"="+URLEncoder.encode(txt, "utf-8"));
-        } catch (UnsupportedEncodingException e) {
-            return appendTarget;
-        }
-    }
-
-    private String keyWordListToQueryString(List<String> keyWords ,String relaTion ) {
+    private String keyWordListToQueryString(List<String> keyWords, String relaTion) {
 //        txt_1_sel:SU
 //        txt_1_value1:淀粉
 //        txt_1_value2:阿
@@ -204,20 +283,19 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
 //        txt_4_relation:#CNKI_OR
 //        txt_4_special1:%
 
-
         StringBuilder sb = new StringBuilder();
-        int i=1;
+        int i = 1;
         Iterator<String> it = keyWords.iterator();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             String key = it.next();
-            urlEncode(sb,"txt_"+i+"_sel","SU");
-            urlEncode(sb,"txt_"+i+"_value1",key);
-            urlEncode(sb,"txt_"+i+"_special1","%");
-            if(it.hasNext()){
-                urlEncode(sb,"txt_"+i+"_value2",key);
-                urlEncode(sb,"txt_"+i+"_relation","#CNKI_OR");
-                if(i>1){
-                    urlEncode(sb,"txt_"+i+"_logical","or");
+            urlEncode(sb, "txt_" + i + "_sel", "SU");
+            urlEncode(sb, "txt_" + i + "_value1", key);
+            urlEncode(sb, "txt_" + i + "_special1", "%");
+            if (it.hasNext()) {
+                urlEncode(sb, "txt_" + i + "_value2", key);
+                urlEncode(sb, "txt_" + i + "_relation", getRelationFromString(relaTion,i,1));
+                if (i > 1) {
+                    urlEncode(sb, "txt_" + i + "_logical", getRelationFromString(relaTion,i,2));
                 }
             }
             i++;
@@ -225,21 +303,23 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         return sb.toString();
     }
 
-    String getRelationFromString(String s,short p,short p2){
-        if(s.length() >= p*2+p2-2  ){
-            char c = s.charAt(p * 2 + p2 - 1);
-            if(c =='0'){
-                return p2==1?"#CNKI_AND":"and";
-            }else if(c =='3'){
-                return p2==1?"#CNKI_NOT":"not";
-            }else {
-                return p2==1?"#CNKI_OR":"or";
+    public String getRelationFromString(String s, short p, short p2) {
+        if (s.length() >= p * 2 + p2 - 2) {
+            char c = s.charAt(p * 2 + p2 - 3);
+            if (c == '1') {
+                return p2 == 1 ? "#CNKI_AND" : "and";
+            } else if (c == '3') {
+                return p2 == 1 ? "#CNKI_NOT" : "not";
+            } else {
+                return p2 == 1 ? "#CNKI_OR" : "or";
             }
-        }else{
-            return p2==1?"#CNKI_OR":"or";
+        } else {
+            return p2 == 1 ? "#CNKI_OR" : "or";
         }
 
     }
 
-
+    public String getRelationFromString(String s, int p, int p2) {
+        return getRelationFromString(s, (short) p, (short) p2);
+    }
 }

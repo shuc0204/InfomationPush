@@ -1,5 +1,6 @@
 package com.info.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
@@ -19,6 +20,9 @@ public class ArticleResultList {
 		this.pageCount = pageCount;
 	}
 	public List<Article> getData() {
+		if(data==null){
+			data = new ArrayList<>();
+		}
 		return data;
 	}
 	public void setData(List<Article> data) {
