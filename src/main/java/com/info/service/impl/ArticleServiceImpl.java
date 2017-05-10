@@ -35,7 +35,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     static final String ArticleUrlPrefix = "http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=";
 	static private ConcurrentHashMap<String,Article> cache = new ConcurrentHashMap();
-
 	@Override
 	public ArticleResultList getArticleByCategoryCode(String categoryCode,Integer curPage,Integer pageSize) {
 		
@@ -179,9 +178,6 @@ public class ArticleServiceImpl implements ArticleService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
         return  articleFull;
     }
 	
