@@ -6,25 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>教学资源分析系统</title>
-    <style type="text/css">
-	*{margin: 0;padding: 0}
-	body{font-size: 12px;font-family: "宋体","微软雅黑";}
-	ul,li{list-style: none;}
-	a:link,a:visited{text-decoration: none;}
-	.list{width: 210px;border-bottom:solid 1px #316a91;margin:40px auto 0 auto;}
-	.list ul li{background-color:#467ca2; border:solid 1px #316a91; border-bottom:0;}
-	.list ul li a{padding-left: 10px;color: #fff; font-size:12px; display: block; font-weight:bold; height:36px;line-height: 36px;position: relative;
-	}
-	.list ul li .inactive{ background:url(../images/off.png) no-repeat 184px center;}
-	.list ul li .inactives{background:url(../images/on.png) no-repeat 184px center;} 
-	.list ul li ul{display: none;}
-	.list ul li ul li { border-left:0; border-right:0; background-color:#6196bb; border-color:#467ca2;}
-	.list ul li ul li ul{display: none;}
-	.list ul li ul li a{ padding-left:20px;}
-	.list ul li ul li ul li { background-color:#d6e6f1; border-color:#6196bb; }
-	.last{ background-color:#d6e6f1; border-color:#6196bb; }
-	.list ul li ul li ul li a{ color:#316a91; padding-left:30px;}
-	</style>
+
     <link rel="stylesheet" type="text/css" href="../css/common.css"/>
     <link rel="stylesheet" type="text/css" href="../css/main.css"/>
     <script type="text/javascript" src="../js/libs/modernizr.min.js"></script>
@@ -125,7 +107,7 @@
         </div>
     </div>
 </div>
-<div class="container clearfix">
+<div class="container clearfix container-body">
     <div class="sidebar-wrap">
         <div class="sidebar-title">
             <h1>菜单</h1>
@@ -140,15 +122,13 @@
 			</div>
         
     </div>
-    
-    
     <!--/sidebar-->
-    <div class="main-wrap" style="height: 800px;">
+    <div class="main-wrap">
         <div class="crumb-wrap">
             <div class="crumb-list"><i class="icon-font">&#xe06b;</i><span>欢迎使用教学资源分析系统。</span></div>
         </div>
-        <div class="result-wrap" style="height: 800px;">
-           <iframe id="iframe_article" width="100%" height="100%" src="${pageContext.request.contextPath }/jsp/welcome.jsp" frameborder="0"></iframe>
+        <div class="result-wrap" >
+           <iframe id="iframe_article" style="overflow: auto;" width="100%" height="100%" src="${pageContext.request.contextPath }/jsp/welcome.jsp" frameborder="0"></iframe>
         </div>    
     </div>
 </div>
