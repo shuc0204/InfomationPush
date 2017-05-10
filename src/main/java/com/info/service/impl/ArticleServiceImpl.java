@@ -133,7 +133,10 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public String[] getKeyWords(String articleCode) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'master' of https://github.com/shuc0204/InfomationPush
         ArticleFull articleFullInfo = getArticleFullInfo(articleCode);
         if(articleFullInfo == null){
             return new String[]{};
