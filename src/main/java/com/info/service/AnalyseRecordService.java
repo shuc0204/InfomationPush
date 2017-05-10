@@ -1,5 +1,6 @@
 package com.info.service;
 
+import com.info.model.Article;
 import com.info.model.User;
 
 import java.util.List;
@@ -10,4 +11,7 @@ import java.util.List;
 public interface AnalyseRecordService {
 
     List analyseAndPush(User user,  String articleCode);
+    
+    List<Article> searchArticleByKeyword(List keywords,int queryCount);
+
 }

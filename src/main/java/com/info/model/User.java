@@ -1,7 +1,5 @@
 package com.info.model;
 
-import com.alibaba.fastjson.JSONObject;
-
 public class User {
     private Integer uid;
 
@@ -42,9 +40,4 @@ public class User {
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
     }
-    @Override
-	public String toString() {
-		return JSONObject.toJSONString(this);
-	}
-	
 }
