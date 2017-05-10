@@ -58,7 +58,7 @@
 			<c:forEach items="${articleList.data}" var="item" varStatus="status">
 				<tr>
 					<td width="80px" align="center">${(articleList.currentPage-1)*articleList.pageSize+status.index + 1}</td>
-					<td><a href="${item.url}">${item.title}</a> …</td>
+					<td><a href="javascript:void(0);" class="openArticleBtn" data-code="${item.code}" data-url = "${item.url}">${item.title}</a> …</td>
 				</tr>
 			</c:forEach>		
 		</table>
@@ -71,4 +71,36 @@
 	<input type="hidden" id="pageCount" value="${articleList.pageCount}"/>
 	<input type="hidden" id="parentCode" value="${parentCode}"/>
 </body>
+<script>
+	$(function () {
+	    var isClicked = false;
+		$('.openArticleBtn').click(function () {
+		    if(isClicked){
+		        return;
+			}
+			var  _this = $(this);
+			var ajaxUrl = '${pageContext.request.contextPath }/api/analyse/submit.do';
+			$.ajax({
+                type: "POST",
+                url: ajaxUrl,
+                data: {
+                    articleCode: _this.data('code')
+				},
+                async: false
+			}).done(function (data) {
+                location.href = _this.data('url');
+                console.log('服务器分析后返回的数据:  \n'+ JSON.stringify(data,null,2));
+			    setTimeout(function () {
+					console.log('10s:  \n'+ JSON.stringify(data,null,2));
+                },2000);
+                isClicked = false;
+
+            });
+
+
+
+        })
+    });
+
+</script>
 </html>

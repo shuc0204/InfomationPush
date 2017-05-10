@@ -1,6 +1,7 @@
 package com.info.service.impl;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,10 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.info.model.ArticleFull;
+import com.info.util.FileCacheUtil;
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.FileUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.Connection.Response;
@@ -22,12 +27,13 @@ import org.springframework.stereotype.Service;
 import com.info.model.Article;
 import com.info.model.ArticleResultList;
 import com.info.service.ArticleService;
+import sun.misc.IOUtils;
 
 
 @Service("articleServiceImpl")
 public class ArticleServiceImpl implements ArticleService {
 
-
+    static final String ArticleUrlPrefix = "http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=";
 	static private ConcurrentHashMap<String,Article> cache = new ConcurrentHashMap();
 
 	@Override
@@ -68,9 +74,10 @@ public class ArticleServiceImpl implements ArticleService {
 			article.setTitle(element.text());
 			String fileCode = getUrlFileName(element.attr("href"));
 			article.setCode(fileCode);
-			article.setUrl("http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename="+ fileCode);
+            article.setUrl(ArticleUrlPrefix + fileCode);
 			articleList.add(article);
-			cache.put(fileCode,article);
+            System.out.println(article.getTitle());
+            cache.put(fileCode,article);
 		}
 		//          /((\d+,*)+)/
 		//System.out.println(content.outerHtml());
@@ -101,7 +108,13 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public Article getArticleByCode(String articleCode) {
-		return cache.get(articleCode);
+        Article article = cache.get(articleCode);
+        if(article ==null)
+        {
+            article = getArticleFullInfo(articleCode);
+            cache.put(articleCode,article);
+        }
+        return article;
 	}
 
 	private static String getUrlFileName(String attr) {
@@ -121,8 +134,57 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public String[] getKeyWords(String articleCode) {
 		// TODO 需要  关键字数组
-		return null;
+        ArticleFull articleFullInfo = getArticleFullInfo(articleCode);
+        if(articleFullInfo == null){
+            return new String[]{};
+        }
+        return articleFullInfo.getKeyWords();
 	}
+
+
+
+	private ArticleFull getArticleFullInfo(String articleCode){
+
+	    Article article = cache.get(articleCode);
+        if(article!=null && article instanceof  ArticleFull){
+            return (ArticleFull) article;
+
+        }
+        ArticleFull articleFull = null;
+        String articleUrl = ArticleUrlPrefix+articleCode;
+
+        try {
+            Document document =null;
+
+            final String tempFileName = "article_"+articleCode + ".html";
+            String tempContent = FileCacheUtil.getTempContent(tempFileName);
+            if(tempContent==null){
+                tempContent =  Jsoup.connect(articleUrl).timeout(6000).execute().body();
+                FileCacheUtil.writeTempCacheOnce(tempFileName,tempContent);
+            }
+            document = Jsoup.parse(tempContent);
+            articleFull = new ArticleFull();
+            articleFull.setCode(articleCode);
+            Elements elements = document.select("#catalog_KEYWORD~a");
+            String[] kws = new String[elements.size()];
+            for (int i = 0; i < kws.length; i++) {
+                String text = elements.get(i).text();
+
+                kws[i] = text.trim().replaceFirst(";","");
+            }
+            articleFull.setKeyWords(kws);
+            String title = document.select("#mainArea > div.wxmain > div.wxTitle > h2").text();
+            articleFull.setTitle(title);
+            articleFull.setUrl(articleUrl);
+            cache.put(articleCode,articleFull);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return  articleFull;
+    }
 	
 
 }

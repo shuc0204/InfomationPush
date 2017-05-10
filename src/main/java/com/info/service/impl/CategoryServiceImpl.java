@@ -2,11 +2,11 @@ package com.info.service.impl;
 
 import java.io.*;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import com.info.util.FileCacheUtil;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,66 +20,23 @@ import com.info.service.CategoryService;
 public class CategoryServiceImpl implements CategoryService{
 
 	static private JSONArray AllCategoryObject;
-	File local_file = FileUtils.getFile("categorydata.json");
-	
-	public static String convertStreamToString(InputStream is) {      
-        /*  
-          * To convert the InputStream to String we use the BufferedReader.readLine()  
-          * method. We iterate until the BufferedReader return null which means  
-          * there's no more data to read. Each line will appended to a StringBuilder  
-          * and returned as String.  
-          */     
-         BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(is,"utf-8"));
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}      
-         StringBuilder sb = new StringBuilder();      
-     
-         String line = null;      
-        try {      
-            while ((line = reader.readLine()) != null) {      
-                 sb.append(line + "\n");      
-             }      
-         } catch (IOException e) {      
-             e.printStackTrace();      
-         } finally {      
-            try {      
-                 is.close();      
-             } catch (IOException e) {      
-                 e.printStackTrace();      
-             }      
-         }      
-     
-        return sb.toString();      
-     }
+	static final String tempFileName = "categorydata.json";
 	
 	public JSONArray getAllCategoryObject(){
 		if(AllCategoryObject==null){
 			String body ="";
 			String categoryUrl  = "http://piccache.cnki.net/kns/script/min/Json_Category.min.js?v=D59787997F3B8FCE";
+
+
 			try {
-				
-				URL url = new URL(categoryUrl);
-				URLConnection openConnection = url.openConnection();			
-				
-				body = convertStreamToString(openConnection.getInputStream());
-				//System.out.println(body);
+				body = IOUtils.toString(new URL(categoryUrl), Charset.forName("utf-8"));
 				body = body.substring(body.indexOf('=')+1, body.lastIndexOf(';'));
 
-
-				if(!local_file.exists()){
-					IOUtils.write(body,new FileOutputStream(local_file));
-				}
+				File local_file = FileCacheUtil.getFile(tempFileName);
+				FileCacheUtil.writeTempCacheOnce(tempFileName,body);
 
 			} catch (IOException e) {
-				try {
-					body = FileUtils.readFileToString(local_file);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-//				e.printStackTrace();
+				body = FileCacheUtil.getTempContent(tempFileName);
 			}
 			AllCategoryObject = (JSONArray) JSONArray.parse(body);
 		}
