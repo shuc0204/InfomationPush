@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.info.dao.KeywordMapper" >
+  <resultMap id="BaseResultMap" type="com.info.model.Keyword" >
+    <id column="kid" property="kid" jdbcType="INTEGER" />
+    <result column="keyword" property="keyword" jdbcType="VARCHAR" />
+    <result column="keycount" property="keycount" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    kid, keyword, keycount, uid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from keyword
+    where kid = #{kid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from keyword
+    where kid = #{kid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.info.model.Keyword" >
+    insert into keyword (kid, keyword, keycount, 
+      uid)
+    values (#{kid,jdbcType=INTEGER}, #{keyword,jdbcType=VARCHAR}, #{keycount,jdbcType=INTEGER}, 
+      #{uid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.info.model.Keyword" >
+    insert into keyword
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="kid != null" >
+        kid,
+      </if>
+      <if test="keyword != null" >
+        keyword,
+      </if>
+      <if test="keycount != null" >
+        keycount,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="kid != null" >
+        #{kid,jdbcType=INTEGER},
+      </if>
+      <if test="keyword != null" >
+        #{keyword,jdbcType=VARCHAR},
+      </if>
+      <if test="keycount != null" >
+        #{keycount,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.info.model.Keyword" >
+    update keyword
+    <set >
+      <if test="keyword != null" >
+        keyword = #{keyword,jdbcType=VARCHAR},
+      </if>
+      <if test="keycount != null" >
+        keycount = #{keycount,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where kid = #{kid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.info.model.Keyword" >
+    update keyword
+    set keyword = #{keyword,jdbcType=VARCHAR},
+      keycount = #{keycount,jdbcType=INTEGER},
+      uid = #{uid,jdbcType=INTEGER}
+    where kid = #{kid,jdbcType=INTEGER}
+  </update>
+  
+  	<insert id="insertKeywordsList" parameterType="java.util.List">
+        insert into keyword (keyword, uid)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.keyword,jdbcType=VARCHAR}, #{item.uid,jdbcType=INTEGER})
+        </foreach>
+        ON DUPLICATE KEY UPDATE keycount=keycount+1;
+    </insert>
+  
+  
+</mapper>

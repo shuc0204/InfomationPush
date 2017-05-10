@@ -54,14 +54,21 @@ public class AnalyseRecordServiceImpl implements AnalyseRecordService {
         /**
          *
          * 分析数据库最近记录  获取推荐文章
-         *
+         * 通过关键字 获取 指定数目 的文章 
          *
          */
-        
+        List keyList=getMaxKeywordCount();
         return Arrays.asList(new String[]{
             "文章列表.。。"
         });
     }
+    
+    
+    //获取  最多数目的关键字
+	private List getMaxKeywordCount() {
+		
+		return null;
+	}
 
 	@Override
 	public List<Article> searchArticleByKeyword(List keywords, int queryCount) {
