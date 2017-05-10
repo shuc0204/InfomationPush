@@ -76,6 +76,7 @@
     		var parentMenu =$(this); 
     		var code = parentMenu.data('code');    		
     		var childsMenu =  parentMenu.next('ul');
+    		var _this = this;
     		if(childsMenu.length==0){
     			
     			$.ajax({
@@ -92,10 +93,10 @@
 	  	      		
 	  	      		parentMenu.after(childsMenu);
 	  	      		childsMenu.find('.inactive').click(memuItemHandler);
-	  	      		toggleMenu.call(this);	  	      		
+	  	      		toggleMenu.call(_this);
 	        	});
     		}else{
-    			toggleMenu.call(this);
+    			toggleMenu.call(_this);
     		}	  		
     		
     	};   	

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="InfomationPush:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="InfomationPush.war">
+      <element id="artifact" artifact-name="InfomationPush:war exploded" />
+    </root>
+  </artifact>
+</component>
