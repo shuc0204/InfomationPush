@@ -79,6 +79,7 @@
 		        return;
 			}
 			var  _this = $(this);
+            location.href = _this.data('url');
 		    var article = {
                 fileName: _this.data('filename'),
                 dbCode:  _this.data('dbcode'),
@@ -91,7 +92,7 @@
                 data: article,
                 async: false
 			}).done(function (data) {
-                location.href = _this.data('url');
+
                 console.log('服务器分析后返回的数据:  \n'+ JSON.stringify(data,null,2));
 			    setTimeout(function () {
 					console.log('10s:  \n'+ JSON.stringify(data,null,2));

@@ -57,9 +57,14 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
     public ArticleResultList queryByKeyWords(List<String> keyWordList, int paggSize, int curPage) {
         try {
             return getArticleList(keyWordList, null, curPage, paggSize);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ArticleResultList();
+            try {
+                return getArticleList(null, null, curPage, paggSize);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                return  new ArticleResultList();
+            }
         }
     }
 
@@ -70,7 +75,7 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
             return  new ArrayList<>();
         }
         ArticleResultList articleResultList = queryByKeyWords(keywords, 20, 1);
-        if (articleResultList.getPageSize() >= queryCount) {
+        if (articleResultList.getData().size() >= queryCount) {
             return articleResultList.getData().subList(0, queryCount);
         } else {
             List<Article> list = articleResultList.getData();
