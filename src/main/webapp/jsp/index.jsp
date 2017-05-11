@@ -59,7 +59,7 @@
         	};   		 		
     		
     		var parentMenu =$(this); 
-    		var fileName = parentMenu.data('fileName');
+    		var code = parentMenu.data('code');
     		var childsMenu =  parentMenu.next('ul');
     		var _this = this;
     		if(childsMenu.length==0){
@@ -67,12 +67,12 @@
     			$.ajax({
   	      		  type: "POST",
   	      		  url: "getChildMenu.do",
-  	      		  data: {"fileName":fileName},
+  	      		  data: {"code":code},
   	      		  async: false
 	  	      	}).done(function(data){
 	  	      		childsMenu = $('<ul style="display: none"></ul>');
 	  	      		$.each(data.childMenuList,function(index,item){
-	  	      			var li = $('<li><a data-fileName="'+item.fileName+'" class="inactive" href="javascript:void(0);"><span onclick="getArticles(\''+item.fileName+'\')">'+item.title+'</span></a></li>');
+	  	      			var li = $('<li><a data-code="'+item.code+'" class="inactive" href="javascript:void(0);"><span onclick="getArticles(\''+item.code+'\')">'+item.title+'</span></a></li>');
 	  	      			childsMenu.append(li);
 	  	      		});
 	  	      		
@@ -118,7 +118,7 @@
         <div class="list">
             <ul class="yiji">
 			<c:forEach items="${primMenuList}" var="menulist">
-                <li><a href="javascript:void(0);"  data-fileName="${menulist.code}" class="menu-item inactive"> <span onclick="getArticles('${menulist.code}')" > ${menulist.title}  </span></a>
+                <li><a href="javascript:void(0);"  data-code="${menulist.code}" class="menu-item inactive"> <span onclick="getArticles('${menulist.code}')" > ${menulist.title}  </span></a>
 					</li>
 				</c:forEach>
             </ul>
