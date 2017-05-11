@@ -32,16 +32,19 @@ public class AnalyseAndPushController {
 
     @RequestMapping("/analyse/submit.do")
     @ResponseBody
-    public Object analyseAndPush(@RequestParam String articleCode, HttpSession session){
+    public Object analyseAndPush( Article article, HttpSession session){
 
         Object userObj = session.getAttribute("loginUser");
         if(userObj ==null){
             return "对不起,用户未登录！";
         }
+        if(article==null || article.getFileName()==null || article.getDbCode()==null|| article.getDbName() ==null){
+            return "数据传输错误！";
+        }
+
         User user = (User) userObj;
-        List keywordList = analyseRecordService.analyseAndPush(user,articleCode);
+        List keywordList = analyseRecordService.analyseAndPush(user,article);
         List<Article> pushArticleList = analyseRecordService.searchArticleByKeyword(keywordList, 20);
-		
         return pushArticleList;
     }
 

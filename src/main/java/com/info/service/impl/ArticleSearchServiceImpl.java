@@ -3,12 +3,15 @@ package com.info.service.impl;
 import com.info.model.Article;
 import com.info.model.ArticleResultList;
 import com.info.service.ArticleSearchService;
+import com.info.service.ArticleService;
+import com.info.util.QueryStringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -26,9 +29,9 @@ import java.util.regex.Pattern;
  */
 @Service
 public class ArticleSearchServiceImpl implements ArticleSearchService {
-    static final String ArticleUrlPrefix = "http://kns.cnki.net/KCMS/detail/detail.aspx";
 
     static final CacheManager cacheManager = new ConcurrentMapCacheManager();
+
 
     @Override
     public ArticleResultList queryByCategoryCode(String categoryCode) {
@@ -77,15 +80,6 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         }
     }
 
-    public static String getAttrFrom(String queryString, String attr) {
-//        dbcode=CJFQ&dbname=CJFD2014&filename=
-        Pattern pattern = Pattern.compile("[?&]" + attr + "=([^&]*)(?=&|$)", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(queryString);
-        if (matcher.find())
-            return (matcher.group(1));
-        return null;
-    }
-
     public <T> T getFromCache(Object key) {
         Cache.ValueWrapper c1 = cacheManager.getCache("c").get(key);
         if(c1 == null){
@@ -126,17 +120,13 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
     }
 
     public ArticleResultList getArticleList(List<String> keyWord, String categoryCode, Integer curPage, Integer pageSize) throws IOException {
-
-
         if (curPage == null) {
             curPage = 1;
         }
         if (pageSize == null) {
             pageSize = 20;
         }
-
         List<Article> articleList = new ArrayList<Article>();
-
 //        action:
 //        NaviCode:*
 //        ua:1.21
@@ -204,24 +194,7 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
             Article article = new Article();
             article.setTitle(element.text());
             String href = element.attr("href");
-            String filename = getAttrFrom(href, "filename");
-            String dbcode = getAttrFrom(href, "dbcode");
-            String dbname = getAttrFrom(href, "dbname");
-            article.setFileName(filename);
-            article.setDbCode(dbcode);
-            article.setDbName(dbname);
-            String articlePara = "";
-            if (filename != null) {
-                articlePara += "&filename=" + filename;
-            }
-            if (dbcode != null) {
-                articlePara += "&dbcode=" + dbcode;
-            }
-            if (dbname != null) {
-                articlePara += "&dbname=" + dbname;
-            }
-            String articleUrl = ArticleUrlPrefix + "?" + articlePara.substring(1);
-            article.setUrl(articleUrl);
+            ArticleServiceImpl.setArticleCode(article,href);
             articleList.add(article);
         }
         String text = content.select(".TitleLeftCell > div:nth-child(1)").text();

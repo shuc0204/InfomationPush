@@ -34,7 +34,7 @@
 	        callback:function(index){//回调函数， 
 	        	var count =index.getCurrent();
 	        	//将分页数据重新 加载到 listArticle.jsp中
-	        	location.href="${pageContext.request.contextPath }/article/getArticleList.do?fileName="+parentCode+"&current="+count+"&pageSize="+pageSize;
+	        	location.href="${pageContext.request.contextPath }/article/getArticleList.do?code="+parentCode+"&current="+count+"&pageSize="+pageSize;
 	        }, 
 	        
 	    });	    
@@ -58,7 +58,7 @@
 			<c:forEach items="${articleList.data}" var="item" varStatus="status">
 				<tr>
 					<td width="80px" align="center">${(articleList.currentPage-1)*articleList.pageSize+status.index + 1}</td>
-					<td><a href="javascript:void(0);" class="openArticleBtn" data-fileName="${item.fileName}" data-url = "${item.url}">${item.title}</a> …</td>
+					<td><a href="javascript:void(0);" class="openArticleBtn" data-dbcode="${item.dbCode}" data-dbname="${item.dbName}" data-filename="${item.fileName}" data-url = "${item.url}">${item.title}</a> …</td>
 				</tr>
 			</c:forEach>		
 		</table>
@@ -79,13 +79,16 @@
 		        return;
 			}
 			var  _this = $(this);
+		    var article = {
+                fileName: _this.data('filename'),
+                dbCode:  _this.data('dbcode'),
+                dbName:  _this.data('dbname'),
+            };
 			var ajaxUrl = '${pageContext.request.contextPath }/api/analyse/submit.do';
 			$.ajax({
                 type: "POST",
                 url: ajaxUrl,
-                data: {
-                    articleCode: _this.data('fileName')
-				},
+                data: article,
                 async: false
 			}).done(function (data) {
                 location.href = _this.data('url');

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface AnalyseRecordService {
 
-    List analyseAndPush(User user,  String articleCode);
+    List analyseAndPush(User user,  Article article);
     
     List<Article> searchArticleByKeyword(List keywords,int queryCount);
 

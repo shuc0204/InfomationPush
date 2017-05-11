@@ -20,9 +20,9 @@
         }      
     	
     }
-    function getArticles(fileName){
+    function getArticles(code){
     	
-    	var listurl = "${pageContext.request.contextPath }/article/getArticleList.do?fileName="+fileName+"&current=1&pageSize=20";
+    	var listurl = "${pageContext.request.contextPath }/article/getArticleList.do?code="+code+"&current=1&pageSize=20";
     	$('#iframe_article').attr('src',listurl);
 
     }
@@ -118,7 +118,7 @@
         <div class="list">
             <ul class="yiji">
 			<c:forEach items="${primMenuList}" var="menulist">
-                <li><a href="javascript:void(0);"  data-fileName="${menulist.fileName}" class="menu-item inactive"> <span onclick="getArticles('${menulist.fileName}')" > ${menulist.title}  </span></a>
+                <li><a href="javascript:void(0);"  data-fileName="${menulist.code}" class="menu-item inactive"> <span onclick="getArticles('${menulist.code}')" > ${menulist.title}  </span></a>
 					</li>
 				</c:forEach>
             </ul>

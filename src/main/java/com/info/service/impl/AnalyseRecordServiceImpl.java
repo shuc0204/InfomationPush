@@ -32,10 +32,9 @@ public class AnalyseRecordServiceImpl implements AnalyseRecordService {
     private KeywordMapper keywordDao;
     
     @Override
-    public List analyseAndPush(User user, String articleCode) {
-    		
+    public List analyseAndPush(User user, Article article) {
     	//获取 文章关键字数组
-    	String[] keyWords=articleService.getKeyWords(articleCode);
+    	String[] keyWords=articleService.getKeyWords(article);
         /**
          *
          *  这里将用户浏览记录保存到数据库     
@@ -61,7 +60,6 @@ public class AnalyseRecordServiceImpl implements AnalyseRecordService {
         for (Keyword keyword : keyList) {
 			keywords.add(keyword.getKeyword());
 		}
-        
         return keywords;
     }
 

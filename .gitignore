@@ -1,5 +1,5 @@
 /target/
 /src/main/resources/jdbc.properties
-/ache_temp
+/cache_temp
 /.idea/*
 /InfomationPush.iml

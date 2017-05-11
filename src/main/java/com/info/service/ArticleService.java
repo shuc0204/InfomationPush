@@ -9,7 +9,8 @@ public interface ArticleService {
 
 	ArticleResultList getArticleByCategoryCode(String categoryCode, Integer curPage, Integer pageSize);
 
-	Article getArticleByCode(String articleCode);
+	Article getArticleByCode(String dbName,String dbCode,String fileName);
 
-	String[] getKeyWords(String articleCode);
+	String[] getKeyWords(Article article);
+
 }
