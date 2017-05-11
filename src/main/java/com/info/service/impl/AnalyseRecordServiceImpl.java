@@ -46,6 +46,9 @@ public class AnalyseRecordServiceImpl implements AnalyseRecordService {
 			key.setUid(user.getUid());
 			keys.add(key);			
 		}
+		if(keys.size()==0){
+            return keys;
+        }
         int count = keywordDao.insertKeywordsList(keys);      
         /**
          *

@@ -66,6 +66,9 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
     @Override
     public List<Article> searchArticleByKeyWord(List keywords, int queryCount) {
         // TODO 通过关键字 搜索指定 数目 文章
+        if(keywords.size()==0){
+            return  new ArrayList<>();
+        }
         ArticleResultList articleResultList = queryByKeyWords(keywords, 20, 1);
         if (articleResultList.getPageSize() >= queryCount) {
             return articleResultList.getData().subList(0, queryCount);
