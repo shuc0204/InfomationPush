@@ -58,11 +58,11 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         try {
             return getArticleList(keyWordList, null, curPage, paggSize);
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             try {
                 return getArticleList(null, null, curPage, paggSize);
             } catch (IOException e1) {
-                e1.printStackTrace();
+//                e1.printStackTrace();
                 return  new ArticleResultList();
             }
         }
@@ -70,7 +70,7 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
 
     @Override
     public List<Article> searchArticleByKeyWord(List keywords, int queryCount) {
-        // TODO 通过关键字 搜索指定 数目 文章
+        // TODO 閫氳繃鍏抽敭瀛�鎼滅储鎸囧畾 鏁扮洰 鏂囩珷
         if(keywords.size()==0){
             return  new ArrayList<>();
         }
@@ -140,13 +140,12 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
 //        ua:1.21
 //        PageName:ASP.brief_result_aspx
 //        DbPrefix:SCDB
-//        DbCatalog:中国学术文献网络出版总库
+//        DbCatalog:涓浗瀛︽湳鏂囩尞缃戠粶鍑虹増鎬诲簱
 //        ConfigFile:SCDB.xml       SCDBINDEX.xml
 //        db_opt:CJFQ,CDFD,CMFD,CPFD,IPFD,CCND
 //        txt_1_sel:SU
-//        txt_1_value1:淀粉
-//        txt_1_value2:阿
-//        txt_1_relation:#CNKI_OR
+//        txt_1_value1:娣�矇
+//        txt_1_value2:闃�//        txt_1_relation:#CNKI_OR
 //        txt_1_special1:=
 //        txt_2_sel:TI
 //        txt_2_value1:asdf
@@ -237,9 +236,8 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
 
     private String keyWordListToQueryString(List<String> keyWords, String relaTion) {
 //        txt_1_sel:SU
-//        txt_1_value1:淀粉
-//        txt_1_value2:阿
-//        txt_1_freq2:5
+//        txt_1_value1:娣�矇
+//        txt_1_value2:闃�//        txt_1_freq2:5
 //        txt_1_relation:#CNKI_OR
 //        txt_1_special1:=
 //        txt_2_sel:TI

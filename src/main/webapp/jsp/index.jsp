@@ -8,11 +8,18 @@
     <title>教学资源分析系统</title>
 
     <link rel="stylesheet" type="text/css" href="../css/common.css"/>
-    <link rel="stylesheet" type="text/css" href="../css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/main.css"/>   
     <script type="text/javascript" src="../js/libs/modernizr.min.js"></script>
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     
     <script type="text/javascript">
+    function getPush(){   	
+
+	    //推送
+	    pushUrl="${pageContext.request.contextPath }/api/analyse/push.do";
+	    $('#iframe_article').attr('src',pushUrl);
+    }
+    
     function outwebSite(){
     	if(confirm("确定要退出本系统吗？"))
         {
@@ -93,6 +100,7 @@
     </script>
 </head>
 <body>
+
 <div class="topbar-wrap white">
     <div class="topbar-inner clearfix">
         <div class="topbar-logo-wrap clearfix">            
@@ -107,6 +115,7 @@
                 <li><a href="${pageContext.request.contextPath }/jsp/userregist.jsp">注册</a></li>
                 <li><a href="javascript:outwebSite()">退出</a></li>
             </ul>
+            
         </div>
     </div>
 </div>
@@ -128,7 +137,8 @@
     <!--/sidebar-->
     <div class="main-wrap">
         <div class="crumb-wrap">
-            <div class="crumb-list"><i class="icon-font">&#xe06b;</i><span>欢迎使用教学资源分析系统。</span></div>
+            <div class="crumb-list" style="float: left;width: 300px;"><i class="icon-font">&#xe06b;</i><span>欢迎使用教学资源分析系统。</span></div>
+            <div class="crumb-list" style="float: right;width: 300px;"><a href="javascript:getPush()" title="推送点击频率最高的文章"><p style="font-size: 25px;color: blue;">推送</p></a></div>
         </div>
         <div class="result-wrap" >
            <iframe id="iframe_article" style="overflow: auto;" width="100%" height="100%" src="${pageContext.request.contextPath }/jsp/welcome.jsp" frameborder="0"></iframe>
@@ -136,4 +146,5 @@
     </div>
 </div>
 </body>
+
 </html>

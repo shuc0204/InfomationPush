@@ -41,11 +41,34 @@ public class AnalyseAndPushController {
         if(article==null || article.getFileName()==null || article.getDbCode()==null|| article.getDbName() ==null){
             return "数据传输错误！";
         }
-
         User user = (User) userObj;
-        List keywordList = analyseRecordService.analyseAndPush(user,article);
-        List<Article> pushArticleList = analyseRecordService.searchArticleByKeyword(keywordList, 20);
-        return pushArticleList;
+        
+        int count = analyseRecordService.analyseKeywords(user,article);
+        if(count>0){
+        	return "插入keyword成功";
+        }else{
+        	return "数据传输错误！";
+        }
+        
+    }
+    
+    @RequestMapping("/analyse/push.do")
+    @ResponseBody
+    public ModelAndView pushArticle( HttpSession session){
+    	
+    	ModelAndView mv=new ModelAndView();
+    	Object userObj = session.getAttribute("loginUser");
+        
+    	if(userObj ==null){
+            return mv;
+        }  	
+        User user = (User) userObj;
+        List keywordList=analyseRecordService.getSerarchKeywordList(user);
+    	List<Article> pushArticleList = analyseRecordService.searchArticleByKeyword(keywordList, 20);
+        mv.addObject("pushArticleList", pushArticleList);
+        mv.setViewName("pushArticle");
+        
+        return mv;  	
     }
 
 }

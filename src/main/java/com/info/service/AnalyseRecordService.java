@@ -9,9 +9,11 @@ import java.util.List;
  * Created by wayne on 2017/5/10.
  */
 public interface AnalyseRecordService {
-
-    List analyseAndPush(User user,  Article article);
     
     List<Article> searchArticleByKeyword(List keywords,int queryCount);
+
+	int analyseKeywords(User user, Article article);
+
+	List getSerarchKeywordList(User user);
 
 }

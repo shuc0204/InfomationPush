@@ -8,14 +8,21 @@
     <link href="${pageContext.request.contextPath }/css/admin_login.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript">
+	// 无账号 密码 直接 登录系统
 	$(function(){
 		$("#access").click(function(){			
 				location.href="${pageContext.request.contextPath }/meun/getPrimMenu.do?loginUser=";				
 			});		
-	});	
+	});
+	
+	//	login.jsp载入时 默认聚焦 到 用户名输入框 
+	function setFocus()
+	{
+		document.getElementById("username").focus()
+	}
 	</script>
 </head>
-<body>
+<body onload="setFocus()">
 <div class="admin_login_wrap">
     <h1>教学资源分析系统</h1>
     <div class="adming_login_border">
@@ -25,11 +32,11 @@
                 <ul class="admin_items">
                     <li>
                         <label for="user">用户名：</label>
-                        <input type="text" name="username" value="cc" id="username" size="40" class="admin_input_style" />
+                        <input type="text" name="username" id="username" size="40" class="admin_input_style" placeholder="请输入账号"/>
                     </li>
                     <li>
                         <label for="pwd">密码：</label>
-                        <input type="password" name="password" value="cc" id="password" size="40" class="admin_input_style" />
+                        <input type="password" name="password" id="password" size="40" class="admin_input_style" placeholder="请输入密码" />
                     </li>
                     <li>
                         <input type="submit" tabindex="3" value="用户登录" class="btn btn-primary" /><input type="button" id="access" tabindex="3" value="无账号密码登录" class="btn btn-primary" title="将不会拥有推送功能"/>

@@ -9,10 +9,13 @@ import com.info.service.AnalyseRecordService;
 import com.info.service.ArticleSearchService;
 import com.info.service.ArticleService;
 import com.info.service.CategoryService;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -29,48 +32,53 @@ public class AnalyseRecordServiceImpl implements AnalyseRecordService {
     private CategoryService categoryService;
 
     @Autowired
-    private KeywordMapper keywordDao;
+    private KeywordMapper keywordDao;   
+
+    @Autowired
+    ArticleSearchService articleSearchService ;
     
-    @Override
-    public List analyseAndPush(User user, Article article) {
-    	//è·å– æ–‡ç« å…³é”®å­—æ•°ç»„
+	@Override
+	public List<Article> searchArticleByKeyword(List keywords, int queryCount) {
+		return  articleSearchService.searchArticleByKeyWord(keywords,queryCount);
+	}
+		
+	@Override
+	public int analyseKeywords(User user, Article article) {
+		//»ñÈ¡ ÎÄÕÂ¹Ø¼ü×ÖÊı×é
     	String[] keyWords=articleService.getKeyWords(article);
         /**
          *
-         *  è¿™é‡Œå°†ç”¨æˆ·æµè§ˆè®°å½•ä¿å­˜åˆ°æ•°æ®åº“     
+         *  ÕâÀï½«ÓÃ»§ä¯ÀÀ¼ÇÂ¼±£´æµ½Êı¾İ¿â     
          */      
        List<Keyword> keys=new ArrayList<Keyword>();
-        for (String string : keyWords) {
+       	for (String string : keyWords) {
 			Keyword key=new Keyword();
 			key.setKeyword(string);
 			key.setUid(user.getUid());
-			keys.add(key);			
+			Date date=new Date();
+			key.setUpdatetime(date.getTime());
+			keys.add(key);
+			
 		}
 		if(keys.size()==0){
-            return keys;
+            return 0;
         }
-        int count = keywordDao.insertKeywordsList(keys);      
-        /**
-         *
-         * åˆ†ææ•°æ®åº“æœ€è¿‘è®°å½•  è·å–æ¨èæ–‡ç« 
-         * é€šè¿‡å…³é”®å­— è·å– æŒ‡å®šæ•°ç›® çš„æ–‡ç«  
-         *
-         */
-        // æ•°æ®åº“ æŸ¥è¯¢ å‡ºæ¥å…³é”®å­—æ¬¡æ•°æœ€å¤šçš„5ä¸ªï¼›
-        List<Keyword> keyList=keywordDao.selectByKeycount();
+		
+        int count = keywordDao.insertKeywordsList(keys);    
+		return count;
+	}
+
+
+	@Override
+	public List getSerarchKeywordList(User user) {
+		// Êı¾İ¿â ²éÑ¯ ³öÀ´¹Ø¼ü×Ö´ÎÊı×î¶àµÄ5¸ö£»
+        List<Keyword> keyList=keywordDao.selectByKeycount(user.getUid());
       
         List keywords=new ArrayList();
         for (Keyword keyword : keyList) {
 			keywords.add(keyword.getKeyword());
 		}
         return keywords;
-    }
-
-    @Autowired
-    ArticleSearchService articleSearchService ;
-	@Override
-	public List<Article> searchArticleByKeyword(List keywords, int queryCount) {
-		return  articleSearchService.searchArticleByKeyWord(keywords,queryCount);
 	}
 	
 }
