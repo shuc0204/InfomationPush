@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/main/java/com/info/service/AnalyseRecordService.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/info/service/ArticleSearchService.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/info/service/ArticleService.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/info/service/CategoryService.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/info/service/impl/AnalyseRecordServiceImpl.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/info/service/impl/ArticleSearchServiceImpl.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/info/service/impl/UserOperateImpl.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/src/test/java/com/info/service/impl/CategoryServiceImplTest.java" charset="UTF-8" />
   </component>
 </project>
