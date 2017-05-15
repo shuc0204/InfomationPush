@@ -26,8 +26,6 @@ public class CategoryServiceImpl implements CategoryService{
 		if(AllCategoryObject==null){
 			String body ="";
 			String categoryUrl  = "http://piccache.cnki.net/kns/script/min/Json_Category.min.js?v=D59787997F3B8FCE";
-
-
 			try {
 				body = IOUtils.toString(new URL(categoryUrl), Charset.forName("utf-8"));
 				body = body.substring(body.indexOf('=')+1, body.lastIndexOf(';'));
@@ -127,17 +125,6 @@ public class CategoryServiceImpl implements CategoryService{
 			}
 		}
 		return eval;
-
-
-
-	}
-
-
-	public static void main(String[] args) {
-		List<Category> c=new CategoryServiceImpl().getCategoryListByParentCode("A");
-		for (Category category : c) {
-			System.out.println(category.toString());
-		}
 	}
 	
 }

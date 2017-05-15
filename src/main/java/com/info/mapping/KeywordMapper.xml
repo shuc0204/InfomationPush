@@ -96,4 +96,7 @@
         </foreach>
         ON DUPLICATE KEY UPDATE keycount=keycount+1;
     </insert>
+    <delete id="deleteOverdueKeyword" parameterType="java.lang.Integer">
+    delete  FROM keyword   where (unix_timestamp()- SUBSTR(updatetime , 1 , 10))/60  > #{_parameter}
+    </delete>
 </mapper>

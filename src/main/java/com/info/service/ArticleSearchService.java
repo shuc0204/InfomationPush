@@ -6,7 +6,7 @@ import com.info.model.ArticleResultList;
 import java.util.List;
 
 /**
- * Created by wayne on 2017/5/10.
+ * 通过关键字搜索文章结果集service接口
  */
 
 public interface ArticleSearchService {

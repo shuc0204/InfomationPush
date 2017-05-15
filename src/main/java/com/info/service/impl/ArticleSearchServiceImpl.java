@@ -3,15 +3,12 @@ package com.info.service.impl;
 import com.info.model.Article;
 import com.info.model.ArticleResultList;
 import com.info.service.ArticleSearchService;
-import com.info.service.ArticleService;
-import com.info.util.QueryStringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -135,24 +132,7 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
             pageSize = 20;
         }
         List<Article> articleList = new ArrayList<Article>();
-//        action:
-//        NaviCode:*
-//        ua:1.21
-//        PageName:ASP.brief_result_aspx
-//        DbPrefix:SCDB
-//        DbCatalog:涓浗瀛︽湳鏂囩尞缃戠粶鍑虹増鎬诲簱
-//        ConfigFile:SCDB.xml       SCDBINDEX.xml
-//        db_opt:CJFQ,CDFD,CMFD,CPFD,IPFD,CCND
-//        txt_1_sel:SU
-//        txt_1_value1:娣�矇
-//        txt_1_value2:闃�//        txt_1_relation:#CNKI_OR
-//        txt_1_special1:=
-//        txt_2_sel:TI
-//        txt_2_value1:asdf
-//        txt_2_value2:gasd
-//        txt_2_logical:or
-//        txt_2_relation:#CNKI_OR
-//        txt_2_special1:=
+
         Connection connect;
         String searchSession;
         Map<String, String> searchSessionCookie;
@@ -235,32 +215,6 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
     }
 
     private String keyWordListToQueryString(List<String> keyWords, String relaTion) {
-//        txt_1_sel:SU
-//        txt_1_value1:娣�矇
-//        txt_1_value2:闃�//        txt_1_freq2:5
-//        txt_1_relation:#CNKI_OR
-//        txt_1_special1:=
-//        txt_2_sel:TI
-//        txt_2_value1:asdf
-//        txt_2_value2:gasd
-//        txt_2_logical:or
-//        txt_2_freq1:5
-//        txt_2_relation:#CNKI_AND
-//        txt_2_special1:%
-//        txt_3_sel:KY
-//        txt_3_value1:d
-//        txt_3_value2:f
-//        txt_3_logical:not
-//        txt_3_relation:#CNKI_NOT
-//        txt_3_special1:=
-//        txt_4_sel:AB
-//        txt_4_value1:f
-//        txt_4_value2:da
-//        txt_4_logical:and
-//        txt_4_freq1:2
-//        txt_4_freq2:2
-//        txt_4_relation:#CNKI_OR
-//        txt_4_special1:%
 
         StringBuilder sb = new StringBuilder();
         int i = 1;

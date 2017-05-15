@@ -5,6 +5,13 @@ import java.util.List;
 import com.info.model.Keyword;
 import com.info.model.KeywordKey;
 
+/**
+ * 关键字相关操作实现Dao
+ * 是一个接口类，这是Mabatis的特点
+ * 由接口去操作*mapping.xml实现对数据库的操作
+ * @author Administrator
+ *
+ */
 public interface KeywordMapper {
 	
     int deleteByPrimaryKey(KeywordKey key);
@@ -22,4 +29,6 @@ public interface KeywordMapper {
     int insertKeywordsList(List<Keyword> keys);
 
 	List<Keyword> selectByKeycount(Integer uid);
+	
+	int deleteOverdueKeyword(Integer minutes);
 }

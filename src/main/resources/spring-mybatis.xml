@@ -50,4 +50,30 @@
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
     <property name="dataSource" ref="dataSource" />
   </bean>
+  
+  <!-- Quartz 定时器，为了定时删除数据库中keyword-->
+    <bean name="quartzTest" class="com.info.util.TimeToDeleteUtil">
+    	<property name="deltime" value="${deltime}"></property>
+    </bean>
+    <bean id="quartzTestJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="quartzTest"></property>
+        <property name="targetMethod" value="autoRun"></property>
+        <property name="concurrent" value="false"></property>
+    </bean>
+
+    <bean id="quartzTestTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="quartzTestJob"/>
+        <!-- 定时器在服务器启动后多少秒后运行 -->
+        <property name="startDelay" value="10000" />
+        <!-- 每隔多少秒重复执行定时类中的内容 -->
+        <property name="repeatInterval" value="20000" />
+    </bean>
+
+    <bean name="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref local="quartzTestTrigger" />
+            </list>
+        </property>
+    </bean>
 </beans>

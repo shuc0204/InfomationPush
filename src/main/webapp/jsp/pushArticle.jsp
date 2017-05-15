@@ -17,7 +17,7 @@
 </head>
 <body>
 	<div class="result-title">
-		<div class="result-list"><p align="center" style="font-size: 30px;color: red;">经过我深思熟虑为您推送了以下信息！</p></div>
+		<div class="result-list"><p align="center" style="font-size: 30px;color: red;">经过我深思熟虑为您推送了以下高频文章！</p></div>
 	</div>
 	<div class="result-content">
 		

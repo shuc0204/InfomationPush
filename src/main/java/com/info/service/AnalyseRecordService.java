@@ -6,7 +6,7 @@ import com.info.model.User;
 import java.util.List;
 
 /**
- * Created by wayne on 2017/5/10.
+ * 文章信息推送service接口
  */
 public interface AnalyseRecordService {
     

@@ -1,12 +1,18 @@
 package com.info.model;
 
+/**
+ * 用户实体类
+ * @author Administrator
+ *
+ */
 public class User {
+	//用户ID
     private Integer uid;
-
+    //用户账号
     private String username;
-
+    //用户密码
     private String password;
-
+    //用户昵称	
     private String name;
 
     public Integer getUid() {

@@ -1,21 +1,12 @@
 package com.info.service.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.info.model.ArticleFull;
 import com.info.util.FileCacheUtil;
 import com.info.util.QueryStringUtil;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 

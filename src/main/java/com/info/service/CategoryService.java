@@ -4,7 +4,11 @@ import java.util.List;
 
 import com.info.model.Category;
 
-
+/**
+ * 获取菜单 中类别service接口
+ * @author Administrator
+ *
+ */
 public interface CategoryService {
 
 	List<Category> getPrimaryCategoryList();
