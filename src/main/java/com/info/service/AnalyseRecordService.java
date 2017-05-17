@@ -9,7 +9,13 @@ import java.util.List;
  * 文章信息推送service接口
  */
 public interface AnalyseRecordService {
-    
+
+	/**
+	 * sfijsaldfjlsaj lsd as
+	 * @param keywords
+	 * @param queryCount
+	 * @return
+	 */
     List<Article> searchArticleByKeyword(List keywords,int queryCount);
 
 	int analyseKeywords(User user, Article article);

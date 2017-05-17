@@ -18,8 +18,19 @@ import com.info.service.ArticleService;
 @Service("articleServiceImpl")
 public class ArticleServiceImpl implements ArticleService {
 
+	/**
+	 * 文章地址链接的前缀
+	 *  文章的地址用过前缀加  文章的3个属性 来标识唯一的文章地址
+	 */
 	static final String ArticleUrlPrefix = "http://kns.cnki.net/KCMS/detail/detail.aspx";
+	/**
+	 * 缓存对象  ，每次请求的数据缓存到Map里面 第二次访问时可以直接从缓存里面取，而不是每次从网上爬
+	 */
 	static private ConcurrentHashMap<String,Article> cache = new ConcurrentHashMap();
+
+	/**
+	 * 文章搜索服务对象 提供文章搜索功能
+	 */
 	ArticleSearchServiceImpl articleSearchService = new ArticleSearchServiceImpl();
 
 	@Override
@@ -27,6 +38,13 @@ public class ArticleServiceImpl implements ArticleService {
 		return  articleSearchService.getArticleByCategoryCode(categoryCode,curPage,pageSize);
 	}
 
+    /**
+     * 通过文章属性获取文章对象
+     * @param dbName
+     * @param dbCode
+     * @param fileName
+     * @return
+     */
 	@Override
 	public Article getArticleByCode(String dbName,String dbCode,String fileName) {
 		String key = dbName + dbCode + fileName;
@@ -44,10 +62,6 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 
-	@Override
-	public ArticleResultList getArticleByCategoryCode(String categoryCode) {
-		return getArticleByCategoryCode(categoryCode,null,null);
-	}
 
 	@Override
 	public String[] getKeyWords(Article article) {
@@ -58,6 +72,12 @@ public class ArticleServiceImpl implements ArticleService {
         return articleFullInfo.getKeyWords();
 	}
 
+    /**
+     * 根据文章的URL设置文章的属性
+     * @param article 文章对象
+     * @param href 文章链接
+     * @return 设置后的文章链接
+     */
 	public static Article setArticleCode(Article article, String href) {
 		String filename = QueryStringUtil.getAttrFrom(href, "filename");
 		String dbcode = QueryStringUtil.getAttrFrom(href, "dbcode");
@@ -66,7 +86,11 @@ public class ArticleServiceImpl implements ArticleService {
 		return  article;
 	}
 
-
+    /**
+     *  通过文章对象获取 文章扩展对象 扩展后的对象会有关键字信息
+     * @param article 简单文章对象
+     * @return  扩展后的文章对象
+     */
 	private ArticleFull getArticleFullInfo(Article article){
 		String dbName = article.getDbName();
 		String dbCode = article.getDbCode();
@@ -108,6 +132,14 @@ public class ArticleServiceImpl implements ArticleService {
         return  articleFull;
     }
 
+    /**
+     * 根据文章对象属性 生成设置文章对象 并构建文章的Url信息
+     * @param article  空文章对象
+     * @param dbName 文章的 dbName
+     * @param dbCode 文章的 dbCode
+     * @param fileName 文章的 fileName
+     * @return 设置后的文章对象
+     */
 	private static Article setArticleCode(Article article, String dbName, String dbCode, String fileName) {
 		article.setFileName(fileName);
 		article.setDbCode(dbCode);

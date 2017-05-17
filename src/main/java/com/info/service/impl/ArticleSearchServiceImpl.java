@@ -30,25 +30,7 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
     static final CacheManager cacheManager = new ConcurrentMapCacheManager();
 
 
-    @Override
-    public ArticleResultList queryByCategoryCode(String categoryCode) {
-        try {
-            return getArticleList(null, categoryCode, 1, 20);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ArticleResultList();
-        }
-    }
 
-    @Override
-    public ArticleResultList queryByKeyWords(List<String> keyWordList) {
-        try {
-            return getArticleList(keyWordList, null, 1, 20);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ArticleResultList();
-        }
-    }
 
     @Override
     public ArticleResultList queryByKeyWords(List<String> keyWordList, int paggSize, int curPage) {
@@ -67,7 +49,7 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
 
     @Override
     public List<Article> searchArticleByKeyWord(List keywords, int queryCount) {
-        // TODO 閫氳繃鍏抽敭瀛�鎼滅储鎸囧畾 鏁扮洰 鏂囩珷
+
         if(keywords.size()==0){
             return  new ArrayList<>();
         }
@@ -85,6 +67,12 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         }
     }
 
+    /**
+     * 从缓存里面获取对象
+     * @param key 缓存的键
+     * @param <T> 要缓存的类型
+     * @return 缓存的对象
+     */
     public <T> T getFromCache(Object key) {
         Cache.ValueWrapper c1 = cacheManager.getCache("c").get(key);
         if(c1 == null){
@@ -94,11 +82,26 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         return (T) c;
     }
 
+    /**
+     * 把对象放到缓存里面
+     * @param key 键
+     * @param v 值
+     * @param <T> 类型
+     * @return 缓存的对象
+     */
     public <T> T putToCache(Object key, T v) {
         cacheManager.getCache("c").put(key, v);
         return v;
     }
 
+
+    /**
+     * 通过文章列表获取文章列表
+     * @param categoryCode 文章列表编码
+     * @param curPage 分页参数
+     * @param pageSize 页码大小
+     * @return 搜索结果
+     */
     public ArticleResultList getArticleByCategoryCode(String categoryCode, Integer curPage, Integer pageSize) {
         try {
             return getArticleList(null, categoryCode, curPage, pageSize);
@@ -108,6 +111,14 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         }
     }
 
+    /**
+     * 通过搜索的文章参数生成文章唯一的主键
+     * @param keyWord  搜索文章的关键字
+     * @param categoryCode 文章分类code
+     * @param curPage 第几页
+     * @param pageSize 分页大学
+     * @return 生成的键
+     */
     public String convertArgumentToKey(List<String> keyWord, String categoryCode, Integer curPage, Integer pageSize) {
         StringBuilder sb = new StringBuilder();
 
@@ -124,6 +135,15 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         return sb.toString();
     }
 
+    /**
+     * 核心方法 根据 相关参数 查找文章列表
+     * @param keyWord 关键字数组
+     * @param categoryCode  分类code
+     * @param curPage 页码
+     * @param pageSize 分页大学
+     * @return 搜索后的文章结果
+     * @throws IOException
+     */
     public ArticleResultList getArticleList(List<String> keyWord, String categoryCode, Integer curPage, Integer pageSize) throws IOException {
         if (curPage == null) {
             curPage = 1;
@@ -206,6 +226,14 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         return articleResultList;
     }
 
+    /**
+     * 拼接URL的方法
+     * http://www.baidu.com? key = value
+     * @param appendTarget 字符串StringBuilder
+     * @param key
+     * @param txt
+     * @return 拼接后的对象
+     */
     private static StringBuilder urlEncode(StringBuilder appendTarget, String key, String txt) {
         try {
             return appendTarget.append("&" + key + "=" + URLEncoder.encode(txt, "utf-8"));
@@ -214,6 +242,13 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         }
     }
 
+    /**
+     * 根据关键字拼接出查询条件的URL参数
+     * @param keyWords 关键字数组
+     * @param relaTion 表示多个关键字的 关系   用123 表示 1 表示 并且  2 表示 或者  3 表示不包含
+     *                 如 122122   表示 关键字1 和 关键字2 都要有  和  关键字3 只要有一个出现就行 。。。
+     * @return
+     */
     private String keyWordListToQueryString(List<String> keyWords, String relaTion) {
 
         StringBuilder sb = new StringBuilder();
@@ -236,6 +271,13 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         return sb.toString();
     }
 
+    /**
+     *  上面方法的辅助函数 没多大意义
+     * @param s
+     * @param p
+     * @param p2
+     * @return
+     */
     public String getRelationFromString(String s, short p, short p2) {
         if (s.length() >= p * 2 + p2 - 2) {
             char c = s.charAt(p * 2 + p2 - 3);
@@ -252,6 +294,13 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
 
     }
 
+    /**
+     * 这个也是
+     * @param s
+     * @param p
+     * @param p2
+     * @return
+     */
     public String getRelationFromString(String s, int p, int p2) {
         return getRelationFromString(s, (short) p, (short) p2);
     }

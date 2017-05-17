@@ -48,7 +48,9 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
+
 INSERT INTO `user` VALUES ('1', 'aa', 'aa', '教师'); 
+
 INSERT INTO `user` VALUES ('3', 'dd', 'dd', 'dd');
 INSERT INTO `user` VALUES ('4', 'bb', 'bb', '123');
 INSERT INTO `user` VALUES ('5', '11', '11', '11');
