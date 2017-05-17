@@ -2,5 +2,6 @@ eclipse.preferences.version=1
 encoding//sql/infomationpush.sql=UTF-8
 encoding//src/main/java/com/info/controller/AnalyseAndPushController.java=UTF-8
 encoding//src/main/java/com/info/service/impl/ArticleSearchServiceImpl.java=UTF-8
+encoding//src/main/java/com/info/service/impl/CategoryServiceImpl.java=UTF-8
 encoding//src/test/java/com/info/service/impl/ArticleSearchServiceImplTest.java=UTF-8
 encoding//src/test/java/com/info/service/impl/ArticleServiceImplTest.java=UTF-8
